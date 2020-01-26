@@ -41,18 +41,6 @@ class MyHTMLParser(HTMLParser):
                     alt_text = att[1]
                     break
             self.body_contents += alt_text
-        elif self.in_body:
-            for att in attrs:
-                for a in att: 
-                    print(a)
-                    if a == "hidden": #and true
-                        print("HI", att[1])
-                    elif a == "aria-hidden": #and true
-                        print("HI", att[1])
-                    elif a == "visibility": #and hidden
-                        print("HI", att[1])
-                    elif a == "display": #and none
-                        print("HI", att[1])
 
     def handle_endtag(self, tag):
         if tag == "body":
