@@ -4,6 +4,8 @@
 To run this project you will need to create a .env file with the definitions for 'GOOGLE_APPLICATION_CREDENTIALS' and 'MICROSOFT_CV_SUBSCRIPTION_KEY'.
 These can be obtained by setting up a Google Cloud project and a Microsoft Azure project.
 
+Addtionally in order for the key strokes to register, the program must be run as root.
+
 # Inspiration
 I wanted to create an assistive technology that was more robust than what's currently available. Web developers don't always provide alt-text for their images and I wanted to create an alternative to depending on alt-text.
 
