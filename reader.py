@@ -3,6 +3,7 @@
 from google.cloud import texttospeech
 from html.parser import HTMLParser
 from urllib.request import urlopen
+from urllib.parse import urlparse
 from playsound import playsound
 from dotenv import load_dotenv
 import http.client
@@ -23,16 +24,36 @@ class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == "body":
             self.in_body = True
-        if tag == "img":
+        elif tag == "img":
+            alt_text = ''
             for att in attrs:
                 if att[0] == 'src':
+                    parsed_uri = urlparse(self.url)
+                    parsed_url = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
                     rel_url = att[1]
-                    response = json.loads(get_picture_description(url + "/" + rel_url))
+                    response = json.loads(get_picture_description(parsed_url + rel_url))
                     try:
-                        self.body_contents += "Auto-generated picture text: " + \
+                        alt_text = "Auto-generated picture text: " + \
                             response["description"]["captions"][0].get("text")
                     except:
                         pass
+                elif att[0] == 'alt':
+                    alt_text = att[1]
+                    break
+            self.body_contents += alt_text
+        elif self.in_body:
+            for att in attrs:
+                for a in att: 
+                    print(a)
+                    if a == "hidden": #and true
+                        print("HI", att[1])
+                    elif a == "aria-hidden": #and true
+                        print("HI", att[1])
+                    elif a == "visibility": #and hidden
+                        print("HI", att[1])
+                    elif a == "display": #and none
+                        print("HI", att[1])
+
     def handle_endtag(self, tag):
         if tag == "body":
             self.in_body = False
@@ -100,23 +121,21 @@ def move_backward(body, length):
         focus_index = length - 1
     speak(body[focus_index])
 
-#stretch goal, use google caption software
 if __name__ == "__main__":
     load_dotenv()
 
     GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     MICROSOFT_CV_SUBSCRIPTION_KEY = os.getenv('MICROSOFT_CV_SUBSCRIPTION_KEY')
     
+    speak("Please enter the website.")
     url = input("Please enter the website: ")
-
-    
-    print("Please wait for the webpage to be loaded...")
+    speak("Please wait for the webpage to be loaded.")
 
     body = get_body(url).split()
     body_length = len(body)
     
-    print("Use Alt+Tab to advance, and Alt+Shift+Tab to go back a word.")
+    speak("Use Alt to advance, and Alt+Shift to go back a word.")
 
-    keyboard.add_hotkey('alt+tab', move_forward, args=[body, body_length])
-    keyboard.add_hotkey('alt+shift+tab', move_backward, args=[body, body_length])
+    keyboard.add_hotkey('alt', move_forward, args=[body, body_length])
+    keyboard.add_hotkey('alt+shift', move_backward, args=[body, body_length])
     keyboard.wait('ctrl+c')
