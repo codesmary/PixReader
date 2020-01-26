@@ -31,7 +31,7 @@ class MyHTMLParser(HTMLParser):
                     parsed_uri = urlparse(self.url)
                     parsed_url = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
                     rel_url = att[1]
-                    response = json.loads(get_picture_description(parsed_url + rel_url))
+                    response = json.loads(get_picture_description(parsed_url + "/" + rel_url))
                     try:
                         alt_text = "Auto-generated picture text: " + \
                             response["description"]["captions"][0].get("text")
@@ -41,18 +41,6 @@ class MyHTMLParser(HTMLParser):
                     alt_text = att[1]
                     break
             self.body_contents += alt_text
-        elif self.in_body:
-            for att in attrs:
-                for a in att: 
-                    print(a)
-                    if a == "hidden": #and true
-                        print("HI", att[1])
-                    elif a == "aria-hidden": #and true
-                        print("HI", att[1])
-                    elif a == "visibility": #and hidden
-                        print("HI", att[1])
-                    elif a == "display": #and none
-                        print("HI", att[1])
 
     def handle_endtag(self, tag):
         if tag == "body":
