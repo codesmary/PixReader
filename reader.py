@@ -33,7 +33,7 @@ class MyHTMLParser(HTMLParser):
                     rel_url = att[1]
                     response = json.loads(get_picture_description(parsed_url + "/" + rel_url))
                     try:
-                        alt_text = "Auto-generated picture text: " + \
+                        alt_text = "Auto-generated caption: " + \
                             response["description"]["captions"][0].get("text")
                     except:
                         pass
